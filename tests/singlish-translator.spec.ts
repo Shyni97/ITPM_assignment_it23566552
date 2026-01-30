@@ -7,14 +7,20 @@ const sinhalaOutputSelector = 'div.bg-slate-50.whitespace-pre-wrap';
 async function translate(page, text: string) {
   const input = page.locator(singlishInputSelector);
   const output = page.locator(sinhalaOutputSelector);
+
   await page.goto(URL);
   await input.fill('');
-  if (text.length > 0) {
+
+  if (text.trim().length > 0) {
     await input.type(text, { delay: 50 });
-    await expect(output).not.toBeEmpty({ timeout: 5000 });
+
+    // Wait until at least one Sinhala character appears
+    await expect(output).toContainText(/[අ-ෆ]/, { timeout: 8000 });
   }
+
   return output;
 }
+
 
 // ----------------------------
 // POSITIVE TEST CASES
@@ -112,7 +118,7 @@ test('Pos_Fun_0018 - eka mokatadha karanne?', async ({ page }) => {
 
 test('Pos_Fun_0019 - dhaen kaalea godak lamayi igena ganne online class valin. Zoom saha Teams haraha lesiyen connect venna puluvan ne. gedhara idhan igena ganna eka lesi unath, yaluvo hamba wenne nathi eka aparadhee. Internet connection eka hoda nathnam class eka karanna amaru venava. WIFI ekak gedhara thiynvanm vaeda lesi haebyi pooth valin lamayi aeth venvaa.', async ({ page }) => {
   const output = await translate(page, 'dhaen kaalea godak lamayi igena ganne online class valin. Zoom saha Teams haraha lesiyen connect venna puluvan ne. gedhara idhan igena ganna eka lesi unath, yaluvo hamba wenne nathi eka aparadhee. Internet connection eka hoda nathnam class eka karanna amaru venava. WIFI ekak gedhara thiynvanm vaeda lesi haebyi pooth valin lamayi aeth venvaa.');
-  await expect(output).not.toBeEmpty('කාලේ');
+  await expect(output).toContainText('කාලේ');
 });
 
 test('Pos_Fun_0020 - oba enavanam mama yanavaa.', async ({ page }) => {
