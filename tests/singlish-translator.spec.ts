@@ -153,58 +153,70 @@ test('Pos_Fun_0024 - mata gedhara podi vaeda vagayak thiyanavaa enisa mama adha 
 });
 
 // ----------------------------
-// NEGATIVE TEST CASES
+// NEGATIVE TEST CASES (These should FAIL to demonstrate validation issues)
 // ----------------------------
 
 test('Neg_Fun_0001 - mamagedharaenavaa', async ({ page }) => {
   const output = await translate(page, 'mamagedharaenavaa');
-  await expect(output).not.toBeEmpty();
+  // This should FAIL - expects empty output but translator incorrectly translates invalid input
+  await expect(output).toBeEmpty();
 });
 
 test('Neg_Fun_0002 - elaz mchn mama office yanne late venna puluvan', async ({ page }) => {
   const output = await translate(page, 'elaz mchn mama office yanne late venna puluvan');
-  await expect(output).not.toBeEmpty();
+  // This should FAIL - expects no translation but translator processes slang incorrectly
+  await expect(output).toBeEmpty();
 });
 
 test('Neg_Fun_0003 - ma ma gedha ra yanava', async ({ page }) => {
   const output = await translate(page, 'ma ma gedha ra yanava');
-  await expect(output).not.toBeEmpty();
+  // This should FAIL - expects empty output for badly formatted input
+  await expect(output).toBeEmpty();
 });
 
 test('Neg_Fun_0004 - machan ela today class yanne naha mama', async ({ page }) => {
   const output = await translate(page, 'machan ela today class yanne naha mama');
-  await expect(output).not.toBeEmpty();
+  // This should FAIL - mixed English/slang should not translate
+  await expect(output).toBeEmpty();
 });
 
 test('Neg_Fun_0005 - api     bus           eke yanava', async ({ page }) => {
   const output = await translate(page, 'api     bus           eke yanava');
-  await expect(output).not.toBeEmpty();
+  // This should FAIL - excessive spaces should be rejected
+  await expect(output).toBeEmpty();
 });
 
 test('Neg_Fun_0006 - api @ beach # yamu!!', async ({ page }) => {
   const output = await translate(page, 'api @ beach # yamu!!');
-  await expect(output).not.toBeEmpty();
+  // This should FAIL - special characters should be rejected
+  await expect(output).toBeEmpty();
 });
 
 test('Neg_Fun_0007 - aiyo!!! mokada me????', async ({ page }) => {
   const output = await translate(page, 'aiyo!!! mokada me????');
-  await expect(output).not.toBeEmpty();
+  // This should FAIL - excessive punctuation should be rejected
+  await expect(output).toBeEmpty();
 });
 
 test('Neg_Fun_0008 - qwerty zxcvb random words', async ({ page }) => {
   const output = await translate(page, 'qwerty zxcvb random words');
-  await expect(output).not.toBeEmpty();
+  // This should FAIL - gibberish should not translate
+  await expect(output).toBeEmpty();
 });
 
 test('Neg_Fun_0009 - mamaaa mama gaeddaara yanvaa', async ({ page }) => {
   const output = await translate(page, 'mamaaa mama gaeddaara yanvaa');
-  await expect(output).not.toBeEmpty();
+  // This should FAIL - misspelled words with extra letters should be rejected
+  await expect(output).toBeEmpty();
 });
 
 test('Neg_Fun_0010 - Empty input', async ({ page }) => {
   await page.goto(URL);
+  const input = page.locator(singlishInputSelector);
   const output = page.locator(sinhalaOutputSelector);
-  await expect(output).toBeEmpty();
+  await input.fill('');
+  // This should FAIL - expects some error message but shows nothing
+  await expect(output).toContainText('Error');
 });
 
 // ----------------------------
