@@ -12,15 +12,14 @@ async function translate(page, text: string) {
   await input.fill('');
 
   if (text.trim().length > 0) {
-    // On CI or for long texts, use fill() to avoid timeout issues
-    // On local, use type() for texts under 50 chars to test real-time behavior
+   
     if (process.env.CI || text.length > 50) {
       await input.fill(text);
     } else {
       await input.type(text, { delay: 50 });
     }
 
-    // Wait until at least one Sinhala character appears with longer timeout for CI
+    
     await expect(output).toContainText(/[අ-ෆ]/, { timeout: 15000 });
   }
 
@@ -153,60 +152,60 @@ test('Pos_Fun_0024 - mata gedhara podi vaeda vagayak thiyanavaa enisa mama adha 
 });
 
 // ----------------------------
-// NEGATIVE TEST CASES (These should FAIL to demonstrate validation issues)
+// NEGATIVE TEST CASES 
 // ----------------------------
 
 test('Neg_Fun_0001 - mamagedharaenavaa', async ({ page }) => {
   const output = await translate(page, 'mamagedharaenavaa');
-  // This should FAIL - expects empty output but translator incorrectly translates invalid input
+  
   await expect(output).toBeEmpty();
 });
 
 test('Neg_Fun_0002 - elaz mchn mama office yanne late venna puluvan', async ({ page }) => {
   const output = await translate(page, 'elaz mchn mama office yanne late venna puluvan');
-  // This should FAIL - expects no translation but translator processes slang incorrectly
+  
   await expect(output).toBeEmpty();
 });
 
 test('Neg_Fun_0003 - ma ma gedha ra yanava', async ({ page }) => {
   const output = await translate(page, 'ma ma gedha ra yanava');
-  // This should FAIL - expects empty output for badly formatted input
+  
   await expect(output).toBeEmpty();
 });
 
 test('Neg_Fun_0004 - machan ela today class yanne naha mama', async ({ page }) => {
   const output = await translate(page, 'machan ela today class yanne naha mama');
-  // This should FAIL - mixed English/slang should not translate
+ 
   await expect(output).toBeEmpty();
 });
 
 test('Neg_Fun_0005 - api     bus           eke yanava', async ({ page }) => {
   const output = await translate(page, 'api     bus           eke yanava');
-  // This should FAIL - excessive spaces should be rejected
+  
   await expect(output).toBeEmpty();
 });
 
 test('Neg_Fun_0006 - api @ beach # yamu!!', async ({ page }) => {
   const output = await translate(page, 'api @ beach # yamu!!');
-  // This should FAIL - special characters should be rejected
+  
   await expect(output).toBeEmpty();
 });
 
 test('Neg_Fun_0007 - aiyo!!! mokada me????', async ({ page }) => {
   const output = await translate(page, 'aiyo!!! mokada me????');
-  // This should FAIL - excessive punctuation should be rejected
+  
   await expect(output).toBeEmpty();
 });
 
 test('Neg_Fun_0008 - qwerty zxcvb random words', async ({ page }) => {
   const output = await translate(page, 'qwerty zxcvb random words');
-  // This should FAIL - gibberish should not translate
+  
   await expect(output).toBeEmpty();
 });
 
 test('Neg_Fun_0009 - mamaaa mama gaeddaara yanvaa', async ({ page }) => {
   const output = await translate(page, 'mamaaa mama gaeddaara yanvaa');
-  // This should FAIL - misspelled words with extra letters should be rejected
+ 
   await expect(output).toBeEmpty();
 });
 
@@ -215,7 +214,7 @@ test('Neg_Fun_0010 - Empty input', async ({ page }) => {
   const input = page.locator(singlishInputSelector);
   const output = page.locator(sinhalaOutputSelector);
   await input.fill('');
-  // This should FAIL - expects some error message but shows nothing
+  
   await expect(output).toContainText('Error');
 });
 
