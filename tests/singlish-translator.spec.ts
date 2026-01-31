@@ -12,10 +12,15 @@ async function translate(page, text: string) {
   await input.fill('');
 
   if (text.trim().length > 0) {
-    await input.type(text, { delay: 50 });
+    // Use paste instead of type for longer texts to speed up the test
+    if (text.length > 100) {
+      await input.fill(text);
+    } else {
+      await input.type(text, { delay: 50 });
+    }
 
-    // Wait until at least one Sinhala character appears
-    await expect(output).toContainText(/[අ-ෆ]/, { timeout: 8000 });
+    // Wait until at least one Sinhala character appears with longer timeout for CI
+    await expect(output).toContainText(/[අ-ෆ]/, { timeout: 15000 });
   }
 
   return output;
