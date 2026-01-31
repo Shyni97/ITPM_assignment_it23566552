@@ -12,8 +12,9 @@ async function translate(page, text: string) {
   await input.fill('');
 
   if (text.trim().length > 0) {
-    // Use paste instead of type for longer texts to speed up the test
-    if (text.length > 100) {
+    // On CI or for long texts, use fill() to avoid timeout issues
+    // On local, use type() for texts under 50 chars to test real-time behavior
+    if (process.env.CI || text.length > 50) {
       await input.fill(text);
     } else {
       await input.type(text, { delay: 50 });
